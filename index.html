@@ -14,7 +14,10 @@
     <link rel="stylesheet" href="style.css">
 
     <style>
-        .baby{background-color: bisque;text-align: center;padding: 10px;color: black;}
+        .baby {
+            text-align: center;
+            margin-left: 400px;
+        }
     </style>
 </head>
 
@@ -24,7 +27,8 @@
             <a class="navbar-brand" href="#">
                 <img src="images/logo.png" alt="Hard Rock Solution">
             </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavId"
+                aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">
                 <img src="images/toggler-icon.svg" alt="">
             </button>
             <div class="collapse navbar-collapse" id="collapsibleNavId">
@@ -36,7 +40,8 @@
                         <a class="nav-link" href="#">Link</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                        <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">Dropdown</a>
                         <div class="dropdown-menu" aria-labelledby="dropdownId">
                             <a class="dropdown-item" href="#">Action 1</a>
                             <a class="dropdown-item" href="#">Action 2</a>
@@ -46,9 +51,12 @@
             </div>
         </nav>
 
-       
+
     </div>
-    <input id="user-count" type="text"><button>Load User</button></input>
+    <div class="search-box col-5 baby" >
+        <input id="user-count" type="text" class="form-control" placeholder="Enter your artist song name"> <button id="load-user"class="btn btn-success search-btn">Load User</button>
+    </div>
+    
     <div id="users">
     </div>
     <div id="user-detail">
@@ -56,41 +64,50 @@
     </div>
     <!-- Optional JavaScript -->
     <script>
-        const userContainer = document.getElementById('users');
-        fetch('https://api.lyrics.ovh/suggest/baby')
-        .then(res => res.json())
-        .then(data =>{
-            for (let i = 0; i < data.data.length; i++) {
-            const song = data.data[i];
-            //console.log(song);
-            const p = document.createElement('div');
-            // p.innerHTML = song.title;
-            // console.log(song.title);
-            p.innerHTML = `<div class="search-result col-md-8 mx-auto py-4">
-            <div class="single-result row align-items-center my-3 p-3">
-            <div class="col-md-9">
-            title:<h3>${song.title}</h3><p>${song.id}</br>${song.name}</p></div>
-            <div class="col-md-3 text-md-right text-center"> <button class="btn btn-success" onclick="getUsersDetails('${song.artist}')"> Get Details ${song.artist}</button>
-            </div>
-            </div>
-            </div>`;
-            userContainer.appendChild(p);
-         }
-        })
-        function getUsersDetails(songTitle){
-            console.log(songTitle);
-            fetch(`https://api.lyrics.ovh/v1/artist/${songTitle}`)
-            // fetch('https://api.lyrics.ovh/suggest/${songTitle}')
-            .then(res=> res.json())
-            .then(song =>{
-                console.log(song);
-                const detail =document.getElementById('user-detail')
-                detail.innerHTML=`
-                <h1>${song.title}</h1>
-                <p>${song.id},${song.name}</p>
-                `
-            
+        document.getElementById('load-user').addEventListener('click',function(){
+            const countText = document.getElementById('user-count').value;
+            const count = parseInt(countText);
+            fetch('https://api.lyrics.ovh/suggest/baby')
+                .then(res => res.json())
+                .then(data => {
+                    data = data.slice(0,count);
+                    const userContainer = document.getElementById('users');
+                    userContainer = '';
+                    for (let i = 0; i < data.data.length; i++) {
+                        const song = data.data[i];
+                        console.log(song);
+                        const p = document.createElement('div');
+                        // p.innerHTML = song.title;
+                        // console.log(song.title);
+                        p.innerHTML = `<div class="search-result col-md-8 mx-auto py-4">
+                <div class="single-result row align-items-center my-3 p-3">
+                <div class="col-md-9">
+                title:<h3>${song.title}</h3><p>${song.id}</br>${song.artist.name}</p></div>
+                <div class="col-md-3 text-md-right text-center"> 
+                <button class="btn btn-success" onclick="getUsersDetails('${song.artist.name}','${song.title}')"> Get Details ${song.title}</button>
+                </div>
+                </div>
+                </div>`;
+                    userContainer.appendChild(p);
+                }
             })
+        })
+       
+        
+        function getUsersDetails(artist, songTitle) {
+            console.log(songTitle);
+            fetch(`https://api.lyrics.ovh/v1/${artist}/${songTitle}`)
+                // fetch('https://api.lyrics.ovh/suggest/${songTitle}')
+                .then(res => res.json())
+                .then(song => {
+                    console.log(song);
+                    const detail = document.getElementById('user-detail')
+                    detail.innerHTML = `
+                <h1 style="width:50%; margin:0 auto;">${songTitle}</h1>
+                <pre style="color:white; width:50%; margin:0 auto;">${song.lyrics}</pre>
+                `
+
+                })
         }
 
 
