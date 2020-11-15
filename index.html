@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Hard Rock Solution - Song Lyric App</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Custom css -->
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .baby{background-color: bisque;text-align: center;padding: 10px;color: black;}
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <nav class="navbar  navbar-dark my-3">
+            <a class="navbar-brand" href="#">
+                <img src="images/logo.png" alt="Hard Rock Solution">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">
+                <img src="images/toggler-icon.svg" alt="">
+            </button>
+            <div class="collapse navbar-collapse" id="collapsibleNavId">
+                <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownId">
+                            <a class="dropdown-item" href="#">Action 1</a>
+                            <a class="dropdown-item" href="#">Action 2</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+       
+    </div>
+    <input id="user-count" type="text"><button>Load User</button></input>
+    <div id="users">
+    </div>
+    <div id="user-detail">
+
+    </div>
+    <!-- Optional JavaScript -->
+    <script>
+        const userContainer = document.getElementById('users');
+        fetch('https://api.lyrics.ovh/suggest/baby')
+        .then(res => res.json())
+        .then(data =>{
+            for (let i = 0; i < data.data.length; i++) {
+            const song = data.data[i];
+            //console.log(song);
+            const p = document.createElement('div');
+            // p.innerHTML = song.title;
+            // console.log(song.title);
+            p.innerHTML = `<div class="search-result col-md-8 mx-auto py-4">
+            <div class="single-result row align-items-center my-3 p-3">
+            <div class="col-md-9">
+            title:<h3>${song.title}</h3><p>${song.id}</br>${song.name}</p></div>
+            <div class="col-md-3 text-md-right text-center"> <button class="btn btn-success" onclick="getUsersDetails('${song.artist}')"> Get Details ${song.artist}</button>
+            </div>
+            </div>
+            </div>`;
+            userContainer.appendChild(p);
+         }
+        })
+        function getUsersDetails(songTitle){
+            console.log(songTitle);
+            fetch(`https://api.lyrics.ovh/v1/artist/${songTitle}`)
+            // fetch('https://api.lyrics.ovh/suggest/${songTitle}')
+            .then(res=> res.json())
+            .then(song =>{
+                console.log(song);
+                const detail =document.getElementById('user-detail')
+                detail.innerHTML=`
+                <h1>${song.title}</h1>
+                <p>${song.id},${song.name}</p>
+                `
+            
+            })
+        }
+
+
+    </script>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <!-- Custom Script Here -->
+
+</body>
+
+</html>
