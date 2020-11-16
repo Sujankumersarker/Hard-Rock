@@ -66,15 +66,17 @@
     <script>
         document.getElementById('load-user').addEventListener('click',function(){
             const countText = document.getElementById('user-count').value;
-            const count = parseInt(countText);
-            fetch('https://api.lyrics.ovh/suggest/baby')
+            const count = parseFloat(countText);
+            console.log(countText);
+            fetch('https://api.lyrics.ovh/suggest/'+ countText)
                 .then(res => res.json())
                 .then(data => {
-                    data = data.slice(0,count);
-                    const userContainer = document.getElementById('users');
-                    userContainer = '';
-                    for (let i = 0; i < data.data.length; i++) {
-                        const song = data.data[i];
+                    console.log(data);
+                    let sliceData = data.data.slice(0,3);
+                    let userContainer = document.getElementById('users');
+                    ///userContainer = '';
+                    for (let i = 0; i <sliceData.length; i++) {
+                        const song = sliceData[i];
                         console.log(song);
                         const p = document.createElement('div');
                         // p.innerHTML = song.title;
